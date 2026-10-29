@@ -73,6 +73,12 @@ func (p *mailchannelsProvider) Configure(ctx context.Context, req provider.Confi
 	if cfg.APIKey.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(path.Root("api_key"), "Unknown API key",
 			"The api_key is not known until apply. Set it to a value known at plan time, or use the "+EnvAPIKey+" environment variable.")
+	}
+	if cfg.APIURL.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(path.Root("api_url"), "Unknown API URL",
+			"The api_url is not known until apply. Set it to a value known at plan time, or use the "+EnvAPIURL+" environment variable.")
+	}
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -81,7 +87,7 @@ func (p *mailchannelsProvider) Configure(ctx context.Context, req provider.Confi
 		apiKey = cfg.APIKey.ValueString()
 	}
 	apiURL := os.Getenv(EnvAPIURL)
-	if !cfg.APIURL.IsNull() && !cfg.APIURL.IsUnknown() {
+	if !cfg.APIURL.IsNull() {
 		apiURL = cfg.APIURL.ValueString()
 	}
 	if apiKey == "" {

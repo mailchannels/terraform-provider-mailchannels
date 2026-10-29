@@ -125,7 +125,11 @@ func (r *subAccountResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 	state.ID = types.StringValue(account.Handle)
 	state.Handle = types.StringValue(account.Handle)
-	state.CompanyName = types.StringValue(account.CompanyName)
+	// company_name is optional in the API's response; keep the known value
+	// rather than plan a replacement when it is missing.
+	if account.CompanyName != "" {
+		state.CompanyName = types.StringValue(account.CompanyName)
+	}
 	state.Enabled = types.BoolValue(account.Enabled)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }

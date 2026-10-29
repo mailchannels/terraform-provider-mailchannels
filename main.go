@@ -13,7 +13,7 @@ import (
 // Run "go generate" to format example Terraform files and generate the docs.
 
 //go:generate terraform fmt -recursive ./examples/
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --provider-name mailchannels
+//go:generate go tool tfplugindocs generate --provider-name mailchannels
 
 // version is set by goreleaser.
 var version = "dev"

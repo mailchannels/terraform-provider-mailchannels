@@ -106,8 +106,8 @@ func (r *dkimKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"dns_record_value": computedString("Value of the DKIM TXT record, `v=DKIM1; k=rsa; p=...`."),
 			"dns_record_value_chunks": schema.ListAttribute{
 				MarkdownDescription: "`dns_record_value` split into strings of at most 255 characters, for DNS providers " +
-					"that need a long TXT value as several quoted strings (for example Route 53: " +
-					"`join(\" \", [for c in self.dns_record_value_chunks : jsonencode(c)])`).",
+					"that need a long TXT value as several strings. For Route 53, use " +
+					"`records = [join(\"\\\"\\\"\", mailchannels_dkim_key.example.dns_record_value_chunks)]`.",
 				ElementType:   types.StringType,
 				Computed:      true,
 				PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},

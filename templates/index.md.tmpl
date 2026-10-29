@@ -1,0 +1,26 @@
+---
+page_title: "MailChannels Provider"
+description: |-
+  Manage MailChannels Email API DKIM keys, webhooks, sub-accounts, sub-account limits and suppression list entries.
+---
+
+# MailChannels Provider
+
+The MailChannels provider manages [MailChannels Email API](https://docs.mailchannels.net/email-api) resources as code:
+DKIM keys (with their DNS record values, ready for any DNS provider), webhooks, sub-accounts and their send limits,
+and suppression list entries. The `mailchannels_check_domain` data source verifies a domain's SPF, DKIM and
+Domain Lockdown records.
+
+See the [end-to-end guide](guides/end-to-end-domain) for a complete per-environment setup.
+
+## Authentication
+
+The provider authenticates with an Email API key, read from `api_key` or the `MAILCHANNELS_API_KEY`
+environment variable. Prefer the environment variable so the key stays out of configuration files; `api_key`
+is marked sensitive. Sub-account resources need the parent account's key.
+
+## Example Usage
+
+{{ tffile "examples/provider/provider.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}

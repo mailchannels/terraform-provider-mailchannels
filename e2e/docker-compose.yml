@@ -1,0 +1,30 @@
+# End-to-end test of the behaviour script in OVERLORD-34. Run "make e2e", or:
+#   docker build -f e2e/Dockerfile -t terraform-provider-mailchannels-e2e .
+#   docker compose -f e2e/docker-compose.yml up --no-build --abort-on-container-exit --exit-code-from runner
+services:
+  stub:
+    image: terraform-provider-mailchannels-e2e
+    command: ["stubapi", "-addr", "0.0.0.0:8080"]
+
+  dns:
+    image: internetsystemsconsortium/bind9:9.20
+    entrypoint: ["/bin/sh", "-c"]
+    # Copy the zone so BIND can write its journal next to it.
+    command:
+      - cp /zone/example.test.zone /var/cache/bind/ && chown -R bind /var/cache/bind && exec named -g -u bind -c /etc/bind/named.conf
+    volumes:
+      - ./dns/named.conf:/etc/bind/named.conf:ro
+      - ./dns/example.test.zone:/zone/example.test.zone:ro
+
+  runner:
+    image: terraform-provider-mailchannels-e2e
+    command: ["run-e2e"]
+    environment:
+      STUB_URL: http://stub:8080
+      DNS_SERVER: dns
+      DNS_PORT: "5300"
+    volumes:
+      - ./out:/out
+    depends_on:
+      - stub
+      - dns

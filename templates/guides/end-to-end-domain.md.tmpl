@@ -1,0 +1,42 @@
+---
+page_title: "Provision a sending domain end to end"
+subcategory: ""
+description: |-
+  Create a sub-account, DKIM key, DNS records and webhook for one environment, and check the domain.
+---
+
+# Provision a sending domain end to end
+
+This configuration sets up one environment (for example staging) with a single `terraform apply`:
+
+* a sub-account for the environment, with a monthly send limit;
+* a MailChannels-managed DKIM key;
+* the DKIM, SPF and [Domain Lockdown](https://support.mailchannels.com/hc/en-us/articles/16918954360845) TXT
+  records, published with the [hashicorp/dns](https://registry.terraform.io/providers/hashicorp/dns/latest/docs)
+  provider through RFC 2136 dynamic updates;
+* a webhook for delivery events;
+* a check that warns until MailChannels sees the DNS records.
+
+Apply it once per environment, with a workspace or a separate state per environment.
+
+{{ tffile "examples/complete/main.tf" }}
+
+## With Cloudflare
+
+To publish the records with Cloudflare instead, use `cloudflare_dns_record`:
+
+{{ tffile "examples/cloudflare/main.tf" }}
+
+## With Route 53
+
+Route 53 needs TXT values longer than 255 characters split into quoted strings. Use `dns_record_value_chunks`:
+
+```terraform
+resource "aws_route53_record" "dkim" {
+  zone_id = var.route53_zone_id
+  name    = mailchannels_dkim_key.domain.dns_record_name
+  type    = "TXT"
+  ttl     = 3600
+  records = [join("\"\"", mailchannels_dkim_key.domain.dns_record_value_chunks)]
+}
+```

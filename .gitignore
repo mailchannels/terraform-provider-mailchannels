@@ -1,0 +1,8 @@
+/terraform-provider-mailchannels
+/dist/
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+/e2e/out/

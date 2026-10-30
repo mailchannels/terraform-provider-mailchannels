@@ -76,7 +76,7 @@ BIND server that accepts dynamic updates: apply `examples/complete`, plan (no ch
 
 ## Releasing
 
-Releases are built by [GoReleaser](.goreleaser.yml) when a `v*` tag is pushed (see [`ci/github-workflows`](ci/github-workflows/README.md); the workflows still need moving to `.github/workflows/`), and signed with the GPG key in the
+Releases are built by [GoReleaser](.goreleaser.yml) when a `v*` tag is pushed (see [`.github/workflows/release.yml`](.github/workflows/release.yml)), and signed with the GPG key in the
 `GPG_PRIVATE_KEY` and `PASSPHRASE` repository secrets. To publish to the Terraform Registry as
 `mailchannels/mailchannels`, add the key's public half to the Registry namespace, sign in with the `mailchannels`
 GitHub organization, publish this repository, then push the tag.
